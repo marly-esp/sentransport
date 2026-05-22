@@ -92,5 +92,37 @@
       "HLM",
       "Sandaga"
     ]
+  },
+  {
+    "id": 7,
+    "numero": "27",
+    "depart": "Thiaroye",
+    "arrivee": "Plateau",
+    "arrets": 13,
+    "listeArrets": [
+      "Thiaroye Gare",
+      "Pikine",
+      "Hann",
+      "Colobane",
+      "Fass",
+      "Medina",
+      "Plateau"
+    ]
+  },
+  {
+    "id": 8,
+    "numero": "34",
+    "depart": "Rufisque",
+    "arrivee": "Centenaire",
+    "arrets": 15,
+    "listeArrets": [
+      "Rufisque Centre",
+      "Sangalkam",
+      "Keur Massar",
+      "Thiaroye",
+      "Pikine",
+      "Grand Yoff",
+      "Centenaire"
+    ]
   }
 ]

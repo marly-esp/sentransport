@@ -10,31 +10,35 @@ function App() {
   const [recherche, setRecherche] = useState("");
   const [ligneSelectionnee, setLigneSelectionnee] = useState(null);
   const [nbRecherches, setNbRecherches] = useState(0);
-
-  
   const [lignes, setLignes] = useState([]);
-const [chargement, setChargement] = useState(true);
-const [erreur, setErreur] = useState(null);
+  const [chargement, setChargement] = useState(true);
+  const [erreur, setErreur] = useState(null);
 
-useEffect(() => {
-  fetch("http://localhost:5000/lignes")
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Erreur serveur : " + response.status);
-      }
-      return response.json();
-    })
-    .then(data => {
-      setLignes(data);
-      setChargement(false);
-    })
-    .catch(error => {
-      setErreur(error.message);
-      setChargement(false);
-    });
-}, []);
-  
-const lignesFiltrees = lignes.filter(
+  function chargerLignes() {
+    setChargement(true);
+    setErreur(null);
+    fetch("http://localhost:5000/lignes")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Erreur serveur : " + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setLignes(data);
+        setChargement(false);
+      })
+      .catch(error => {
+        setErreur(error.message);
+        setChargement(false);
+      });
+  }
+
+  useEffect(() => {
+    chargerLignes();
+  }, []);
+
+  const lignesFiltrees = lignes.filter(
     (l) =>
       l.depart.toLowerCase().includes(recherche.toLowerCase()) ||
       l.arrivee.toLowerCase().includes(recherche.toLowerCase()) ||
@@ -45,16 +49,20 @@ const lignesFiltrees = lignes.filter(
     setRecherche(valeur);
     setNbRecherches((n) => n + 1);
   }
-
   function handleClickLigne(ligne) {
-    if (ligneSelectionnee && ligneSelectionnee.id === ligne.id) {
-      setLigneSelectionnee(null);
-    } else {
-      setLigneSelectionnee(ligne);
-    }
-  }
 
-  // Ecran de chargement
+  if (ligneSelectionnee && ligneSelectionnee.id === ligne.id) {
+    setLigneSelectionnee(null);
+  } else {
+    fetch("http://localhost:5000/lignes/" + ligne.id)
+      .then(response => response.json())
+      .then(data => {
+        setLigneSelectionnee(data);
+      });
+  }
+}
+  
+
   if (chargement) {
     return (
       <div className="App">
@@ -66,11 +74,11 @@ const lignesFiltrees = lignes.filter(
     );
   }
 
-  // Ecran d'erreur
   if (erreur) {
     return (
       <div className="App">
         <Header />
+        <button onClick={chargerLignes}>🔄 Recharger</button>
         <main className="contenu">
           <div className="message-erreur">
             <p>Impossible de charger les lignes.</p>
@@ -82,11 +90,10 @@ const lignesFiltrees = lignes.filter(
     );
   }
 
-  
-
   return (
     <div className="App">
       <Header />
+      <button onClick={chargerLignes}>🔄 Recharger</button>
       <main className="contenu">
 
         <p className="compteur-recherches">
