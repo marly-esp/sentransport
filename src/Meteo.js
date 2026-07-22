@@ -4,6 +4,7 @@ import './Meteo.css';
 function Meteo() {
   const [meteo, setMeteo] = useState(null);
   const [erreur, setErreur] = useState(null);
+  const [previsions, setPrevisions] = useState([]);
 
   useEffect(() => {
     const API_KEY = process.env.REACT_APP_OWM_KEY;
@@ -11,6 +12,8 @@ function Meteo() {
       setErreur("Cle API manquante (.env)");
       return;
     }
+
+    // Meteo actuelle
     const url =
       `https://api.openweathermap.org/data/2.5/weather`
       + `?q=Dakar&appid=${API_KEY}`
@@ -31,6 +34,30 @@ function Meteo() {
         });
       })
       .catch(err => setErreur(err.message));
+
+    // Previsions a 5 jours (Exercice 2)
+    const urlForecast =
+      `https://api.openweathermap.org/data/2.5/forecast`
+      + `?q=Dakar&appid=${API_KEY}`
+      + `&units=metric&lang=fr`;
+
+    fetch(urlForecast)
+      .then(r => {
+        if (!r.ok) throw new Error("Erreur forecast : " + r.status);
+        return r.json();
+      })
+      .then(data => {
+        // On garde une seule prevision par jour (celle vers midi, 12:00:00)
+        const parJour = data.list.filter(item => item.dt_txt.includes("12:00:00"));
+        const troisProchains = parJour.slice(0, 3).map(item => ({
+          date: item.dt_txt.split(" ")[0],
+          temperature: Math.round(item.main.temp),
+          description: item.weather[0].description,
+          icone: item.weather[0].icon,
+        }));
+        setPrevisions(troisProchains);
+      })
+      .catch(err => console.error("Erreur previsions :", err));
   }, []);
 
   function getAlerte(condition) {
@@ -41,6 +68,12 @@ function Meteo() {
       return { message: "Orage en cours - soyez prudents", classe: "alerte-orage" };
     }
     return null;
+  }
+
+  function formatDate(dateStr) {
+    const jours = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+    const d = new Date(dateStr);
+    return jours[d.getDay()];
   }
 
   if (erreur) {
@@ -72,9 +105,26 @@ function Meteo() {
         </div>
         <span className="meteo-humidite">Humidite : {meteo.humidite}%</span>
       </div>
+
       {alerte && (
         <div className={`meteo-alerte ${alerte.classe}`}>
           {alerte.message}
+        </div>
+      )}
+
+      {previsions.length > 0 && (
+        <div className="previsions-container">
+          {previsions.map((p, index) => (
+            <div key={index} className="prevision-jour">
+              <span className="prevision-jour-nom">{formatDate(p.date)}</span>
+              <img
+                src={`https://openweathermap.org/img/wn/${p.icone}.png`}
+                alt={p.description}
+                className="prevision-icone"
+              />
+              <span className="prevision-temp">{p.temperature}&deg;C</span>
+            </div>
+          ))}
         </div>
       )}
     </div>

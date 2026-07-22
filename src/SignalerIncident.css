@@ -57,3 +57,8 @@
   color: #c62828;
   border-left: 4px solid #c62828;
 }
+
+.signaler-select {
+  cursor: pointer;
+  background: white;
+}

@@ -8,6 +8,7 @@ import Footer from './Footer';
 import Carte from './Carte';
 import Meteo from './Meteo';
 import SignalerIncident from './SignalerIncident';
+import ListeIncidents from './ListeIncidents';
 
 function App() {
   const [recherche, setRecherche] = useState("");
@@ -16,6 +17,7 @@ function App() {
   const [lignes, setLignes] = useState([]);
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState(null);
+  const [refreshIncidents, setRefreshIncidents] = useState(0);
 
   function chargerLignes() {
     setChargement(true);
@@ -133,7 +135,8 @@ function App() {
 
         {ligneSelectionnee && <DetailLigne ligne={ligneSelectionnee} />}
         <Carte />
-        <SignalerIncident />
+        <SignalerIncident onIncidentAjoute={() => setRefreshIncidents(n => n + 1)} />
+        <ListeIncidents refreshTrigger={refreshIncidents} />
       </main>
       <Footer />
     </div>

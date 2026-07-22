@@ -1,0 +1,55 @@
+.incidents-container {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.incidents-titre {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  margin: 0 0 12px 0;
+}
+
+.incidents-vide {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.incidents-liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.incident-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.incident-item:last-child {
+  border-bottom: none;
+}
+
+.incident-ligne {
+  font-weight: 600;
+  color: #0a6e31;
+  margin-right: 10px;
+}
+
+.incident-lieu {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.incident-description {
+  margin: 4px 0 0 0;
+  color: #2c3e50;
+}
+
+.incidents-chargement {
+  color: #7f8c8d;
+  font-style: italic;
+  margin-top: 20px;
+}
